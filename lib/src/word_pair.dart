@@ -42,8 +42,8 @@ Iterable<WordPair> generateWordPairs(
     {int maxSyllables = maxSyllablesDefault,
     int top = topDefault,
     bool safeOnly = safeOnlyDefault,
-    Random random}) sync* {
-  random ??= _random;
+    Random? random}) sync* {
+  final rng = random ?? _random;
 
   bool filterWord(String word) {
     if (safeOnly && unsafe.contains(word)) return false;
@@ -64,13 +64,13 @@ Iterable<WordPair> generateWordPairs(
     shortNouns = nouns.where(filterWord).take(top).toList(growable: false);
   }
 
-  String pickRandom(List<String> list) => list[random.nextInt(list.length)];
+  String pickRandom(List<String> list) => list[rng.nextInt(list.length)];
 
   // We're in a sync* function, so `while (true)` is okay.
   // ignore: literal_only_boolean_expressions
   while (true) {
     String prefix;
-    if (random.nextBool()) {
+    if (rng.nextBool()) {
       prefix = pickRandom(shortAdjectives);
     } else {
       prefix = pickRandom(shortNouns);
@@ -105,22 +105,18 @@ class WordPair {
   /// The second part of the pair.
   final String second;
 
-  String _asPascalCase;
+  String? _asPascalCase;
 
-  String _asCamelCase;
+  String? _asCamelCase;
 
-  String _asLowerCase;
+  String? _asLowerCase;
 
-  String _asUpperCase;
+  String? _asUpperCase;
 
-  String _asString;
+  String? _asString;
 
   /// Create a [WordPair] from the strings [first] and [second].
   WordPair(this.first, this.second) {
-    if (first == null || second == null) {
-      throw ArgumentError("Words of WordPair cannot be null. "
-          "Received: '$first', '$second'");
-    }
     if (first.isEmpty || second.isEmpty) {
       throw ArgumentError("Words of WordPair cannot be empty. "
           "Received: '$first', '$second'");
@@ -137,8 +133,7 @@ class WordPair {
       {int maxSyllables = maxSyllablesDefault,
       int top = topDefault,
       bool safeOnly = safeOnlyDefault,
-      Random random}) {
-    random ??= _random;
+      Random? random}) {
     final pairsIterable = generateWordPairs(
         maxSyllables: maxSyllables,
         top: top,

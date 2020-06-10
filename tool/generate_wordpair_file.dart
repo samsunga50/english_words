@@ -15,14 +15,15 @@ void main(List<String> args) {
   try {
     final countString = args.single;
     count = int.parse(countString);
-  } catch (e) {
-    print("Syllable count not provided or not an integer. ($e)");
-  }
-
-  if (count == null) {
-    print("Please provide number of syllables. For example:\n\n"
-        "\tdart tool/generate_wordpair_file.dart 3\n");
-    exitCode = 1;
+  } on FormatException catch (e) {
+    print("Provided syllable count is not an integer. ($e)");
+    _printUsage();
+    exitCode = 2;
+    return;
+  } on StateError catch (e) {
+    print("Syllable count not provided. ($e)");
+    _printUsage();
+    exitCode = 2;
     return;
   }
 
@@ -39,6 +40,11 @@ void main(List<String> args) {
         '"${pair.first}", "${pair.second}"),');
   });
   print('];');
+}
+
+void _printUsage() {
+  print("Please provide number of syllables. For example:\n\n"
+      "\tdart tool/generate_wordpair_file.dart 3\n");
 }
 
 const _nameClassCode = '''
